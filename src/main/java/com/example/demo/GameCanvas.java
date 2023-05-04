@@ -1,8 +1,9 @@
 package com.example.demo;
 
+import com.example.demo.snake.InfoSnake;
+import com.example.demo.snake.Snake;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 
@@ -18,6 +19,8 @@ public class GameCanvas extends Canvas {
 
     private final int elementsTabX = 13;
     private final int elementsTabY = 8;
+
+    private Thread thread;
 
     private int tab[][] = {
             {0,0,0,0,0,0,0,0,0,0,0,0,0},
@@ -40,10 +43,10 @@ public class GameCanvas extends Canvas {
 
         initPlansza(gc, tab);
 
-        Thread thread = new Thread(new Runnable() {
+        thread = new Thread(new Runnable() {
             @Override
             public void run() {
-                while(true) {
+                while (true) {
                     initPlansza(gc, tab);
                     snake.update(gc);
 
@@ -51,6 +54,9 @@ public class GameCanvas extends Canvas {
                         Thread.sleep(SPEED_GAME);
                     } catch (InterruptedException e) {
                         System.out.println("PROBLEM");
+                        break;
+                    } catch (Exception e) {
+                        break;
                     }
                 }
             }
@@ -66,9 +72,7 @@ public class GameCanvas extends Canvas {
                 Kafelek k = new Kafelek(WIDTH_KAFELEK, HEIGHT_KAFELEK, Color.WHITE);
                 k.setPosition(WIDTH_KAFELEK*j, HEIGHT_KAFELEK*i);
 
-                if(tab[i][j] == 1){
-                    k.setColor(Color.WHITE);
-                }else if(tab[i][j] == 0){
+                if(tab[i][j] == 0){
                     k.setColor(Color.GRAY);
                 }
 
@@ -78,13 +82,27 @@ public class GameCanvas extends Canvas {
     }
 
     public void obslugaKlawiszy(KeyEvent e){
-        System.out.println(e.getCode());
         switch (e.getCode()) {
-
-            case W -> snake.setInfoSnake(InfoSnake.UP);
-            case S -> snake.setInfoSnake(InfoSnake.DOWN);
-            case A -> snake.setInfoSnake(InfoSnake.LEFT);
-            case D -> snake.setInfoSnake(InfoSnake.RIGHT);
+            case W -> {
+                if(snake.getInfoSnake() != InfoSnake.DOWN){
+                    snake.setInfoSnake(InfoSnake.UP);
+                }
+            }
+            case S -> {
+                if(snake.getInfoSnake() != InfoSnake.UP){
+                    snake.setInfoSnake(InfoSnake.DOWN);
+                }
+            }
+            case A -> {
+                if(snake.getInfoSnake() != InfoSnake.RIGHT){
+                    snake.setInfoSnake(InfoSnake.LEFT);
+                }
+            }
+            case D -> {
+                if(snake.getInfoSnake() != InfoSnake.LEFT){
+                    snake.setInfoSnake(InfoSnake.RIGHT);
+                }
+            }
             case Y -> snake.addFriend();
         }
     }

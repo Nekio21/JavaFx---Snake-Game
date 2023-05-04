@@ -31,6 +31,15 @@ public class HelloApplication extends Application {
         stage.show();
     }
 
+    @Override
+    public void stop() throws Exception {
+        super.stop();
+
+        System.out.println("Teletubie mowia papa :)");
+
+        System.exit(12);
+    }
+
     public static void main(String[] args) {
         launch();
     }
